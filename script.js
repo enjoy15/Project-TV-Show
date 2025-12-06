@@ -167,14 +167,17 @@ function setupSearchListener() {
   const searchInput = document.getElementById("search-input");
   searchInput.addEventListener("input", (e) => {
     const searchTerm = e.target.value.toLowerCase();
-    const filteredEpisodes = allEpisodes.filter((episode) => {
-      const name = episode.name.toLowerCase();
-      const summary = episode.summary ? episode.summary.toLowerCase() : "";
-      return name.includes(searchTerm) || summary.includes(searchTerm);
+
+    // Filter shows based on name, genres, or summary
+    const filteredShows = allShows.filter((show) => {
+      const name = show.name.toLowerCase();
+      const genres = show.genres.join(" ").toLowerCase();
+      const summary = show.summary ? show.summary.toLowerCase() : "";
+      return name.includes(searchTerm) || genres.includes(searchTerm) || summary.includes(searchTerm);
     });
 
-    makePageForEpisodes(filteredEpisodes);
-    updateSearchInfo(filteredEpisodes.length, allEpisodes.length);
+    // Update the displayed shows
+    displayShows(filteredShows);
   });
 }
 
