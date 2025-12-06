@@ -115,3 +115,17 @@ header {
   font-weight: bold;
   color: #333;
 }
+
+#loading-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+  margin: 2rem 0;
+}
+
+#error-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: red;
+  margin: 2rem 0;
+}
