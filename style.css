@@ -16,6 +16,65 @@ header {
   text-align: center;
 }
 
+#controls {
+  background-color: #fff;
+  padding: 1.5rem;
+  margin: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+#search-container {
+  flex: 1;
+  min-width: 250px;
+}
+
+#search-input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#search-input:focus {
+  outline: none;
+  border-color: #333;
+  box-shadow: 0 0 5px rgba(51, 51, 51, 0.2);
+}
+
+#search-info {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+#selector-container {
+  flex: 1;
+  min-width: 250px;
+}
+
+#episode-selector {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+#episode-selector:focus {
+  outline: none;
+  border-color: #333;
+  box-shadow: 0 0 5px rgba(51, 51, 51, 0.2);
+}
+
 #episodes-container {
   display: flex;
   flex-wrap: wrap;
