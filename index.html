@@ -14,6 +14,23 @@
     </header>
 
     <main>
+      <div id="controls">
+        <div id="search-container">
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder="Search episodes by name or summary..." 
+          />
+          <p id="search-info"></p>
+        </div>
+
+        <div id="selector-container">
+          <select id="episode-selector">
+            <option value="">Select an episode to jump to...</option>
+          </select>
+        </div>
+      </div>
+
       <div id="episodes-container"></div>
     </main>
 
