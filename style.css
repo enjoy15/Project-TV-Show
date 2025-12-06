@@ -77,11 +77,10 @@ header {
 
 #episodes-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Mimic shows-container layout */
   gap: 1rem;
   padding: 1rem;
   justify-content: center;
-  align-items: flex-start; /* Ensure proper alignment */
 }
 
 .episode-card {
@@ -90,17 +89,21 @@ header {
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  width: 300px; /* Fixed width for grid layout */
-  flex-grow: 0; /* Prevent stretching */
+  width: 300px; /* Fixed width for consistency */
 }
 
 .episode-card img {
   width: 100%;
-  height: auto;
+  height: auto; /* Allow dynamic resizing */
 }
 
 .episode-card .content {
   padding: 1rem;
+  flex-grow: 1; /* Ensure content fills the remaining space */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Align content to the top */
+  overflow: hidden; /* Remove scrollbar */
 }
 
 .episode-card h2 {
