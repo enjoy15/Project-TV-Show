@@ -100,15 +100,21 @@ function toggleView(view) {
   const showsContainer = document.getElementById("shows-container");
   const episodesContainer = document.getElementById("episodes-container");
   const navigation = document.getElementById("navigation");
+  const showSelectorContainer = document.getElementById("show-selector-container");
+  const episodeSelectorContainer = document.getElementById("selector-container"); // Added reference
 
   if (view === "shows") {
     showsContainer.style.display = "flex"; // Ensure grid layout for shows
     episodesContainer.style.display = "none"; // Hide episodes
     navigation.style.display = "none";
+    showSelectorContainer.style.display = "block"; // Show the show dropdown
+    episodeSelectorContainer.style.display = "none"; // Hide the episode dropdown
   } else if (view === "episodes") {
     showsContainer.style.display = "none"; // Hide shows
     episodesContainer.style.display = "flex"; // Ensure grid layout for episodes
     navigation.style.display = "block";
+    showSelectorContainer.style.display = "none"; // Hide the show dropdown
+    episodeSelectorContainer.style.display = "block"; // Show the episode dropdown
   }
 }
 
@@ -245,5 +251,77 @@ function updateSearchInfo(matchCount, totalCount) {
   const searchInfo = document.getElementById("search-info");
   searchInfo.textContent = `Displaying ${matchCount} of ${totalCount} episodes`;
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const showsContainer = document.getElementById("shows-container");
+  const episodesContainer = document.getElementById("episodes-container");
+  const backToShowsButton = document.getElementById("back-to-shows");
+  const episodeSelector = document.getElementById("episode-selector");
+
+  // Function to toggle views
+  function toggleView(showEpisodes) {
+    if (showEpisodes) {
+      showsContainer.style.display = "none";
+      episodesContainer.style.display = "flex";
+    } else {
+      showsContainer.style.display = "flex";
+      episodesContainer.style.display = "none";
+    }
+  }
+
+  // Function to fetch and display episodes for a show
+  async function fetchEpisodesForShow(showId) {
+    try {
+      const response = await fetch(`https://api.tvmaze.com/shows/${showId}/episodes`);
+      const episodes = await response.json();
+
+      // Clear existing episodes
+      episodesContainer.innerHTML = "";
+      episodeSelector.innerHTML = '<option value="">Select an episode to jump to...</option>';
+
+      // Populate episodes
+      episodes.forEach((episode) => {
+        const episodeCard = document.createElement("div");
+        episodeCard.className = "episode-card";
+        episodeCard.innerHTML = `
+          <img src="${episode.image ? episode.image.medium : ''}" alt="${episode.name}">
+          <div class="content">
+            <h2>${episode.name}</h2>
+            <p>${episode.summary || "No summary available."}</p>
+            <p class="episode-code">S${episode.season}E${episode.number}</p>
+          </div>
+        `;
+        episodesContainer.appendChild(episodeCard);
+
+        // Add to episode selector
+        const option = document.createElement("option");
+        option.value = episode.id;
+        option.textContent = `S${episode.season}E${episode.number} - ${episode.name}`;
+        episodeSelector.appendChild(option);
+      });
+    } catch (error) {
+      console.error("Failed to fetch episodes:", error);
+    }
+  }
+
+  // Add event listener to show cards
+  showsContainer.addEventListener("click", (event) => {
+    const showCard = event.target.closest(".show-card");
+    if (showCard) {
+      const showId = showCard.dataset.showId; // Assuming data-show-id is set on each show card
+      fetchEpisodesForShow(showId);
+      toggleView(true); // Hide shows listing and display episodes
+    }
+  });
+
+  // Add event listener to back-to-shows button
+  backToShowsButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    toggleView(false); // Show shows listing and hide episodes
+  });
+
+  // Initialize with shows listing view
+  toggleView(false);
+});
 
 window.onload = setup;
