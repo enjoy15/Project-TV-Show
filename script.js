@@ -22,15 +22,18 @@ async function fetchShows() {
       a.name.toLowerCase().localeCompare(b.name.toLowerCase())
     );
 
-    populateShowSelector(allShows);
+    populateShowSelector(allShows); // Populate the dropdown
+    displayShows(allShows);
   } catch (error) {
     console.error("Error fetching shows:", error);
   }
 }
 
-function populateShowSelector(shows) {
+function populateShowSelector(showList) {
   const showSelector = document.getElementById("show-selector");
-  shows.forEach((show) => {
+  showSelector.innerHTML = "<option value=''>Select a show...</option>"; // Reset options
+
+  showList.forEach((show) => {
     const option = document.createElement("option");
     option.value = show.id;
     option.textContent = show.name;
@@ -38,12 +41,88 @@ function populateShowSelector(shows) {
   });
 }
 
+function displayShows(showList) {
+  const showsContainer = document.getElementById("shows-container");
+  showsContainer.innerHTML = ""; // Clear existing content
+
+  showList.forEach((show) => {
+    const showCard = document.createElement("div");
+    showCard.className = "show-card";
+
+    const showImage = document.createElement("img");
+    showImage.src = show.image ? show.image.medium : "https://via.placeholder.com/300x170?text=No+Image";
+    showImage.alt = show.name;
+
+    const contentDiv = document.createElement("div");
+    contentDiv.className = "content";
+
+    const showTitle = document.createElement("h2");
+    showTitle.textContent = show.name;
+    showTitle.addEventListener("click", () => {
+      fetchEpisodesForShow(show.id);
+      toggleView("episodes");
+    });
+
+    const showSummary = document.createElement("p");
+    showSummary.innerHTML = show.summary || "No summary available.";
+
+    const showGenres = document.createElement("p");
+    showGenres.className = "genres";
+    showGenres.textContent = `Genres: ${show.genres.join(", ")}`;
+
+    const showStatus = document.createElement("p");
+    showStatus.className = "status";
+    showStatus.textContent = `Status: ${show.status}`;
+
+    const showRating = document.createElement("p");
+    showRating.className = "rating";
+    showRating.textContent = `Rating: ${show.rating.average || "N/A"}`;
+
+    const showRuntime = document.createElement("p");
+    showRuntime.className = "runtime";
+    showRuntime.textContent = `Runtime: ${show.runtime || "N/A"} minutes`;
+
+    contentDiv.appendChild(showTitle);
+    contentDiv.appendChild(showSummary);
+    contentDiv.appendChild(showGenres);
+    contentDiv.appendChild(showStatus);
+    contentDiv.appendChild(showRating);
+    contentDiv.appendChild(showRuntime);
+
+    showCard.appendChild(showImage);
+    showCard.appendChild(contentDiv);
+
+    showsContainer.appendChild(showCard);
+  });
+}
+
+function toggleView(view) {
+  const showsContainer = document.getElementById("shows-container");
+  const episodesContainer = document.getElementById("episodes-container");
+  const navigation = document.getElementById("navigation");
+
+  if (view === "shows") {
+    showsContainer.style.display = "flex"; // Ensure grid layout for shows
+    episodesContainer.style.display = "none"; // Hide episodes
+    navigation.style.display = "none";
+  } else if (view === "episodes") {
+    showsContainer.style.display = "none"; // Hide shows
+    episodesContainer.style.display = "flex"; // Ensure grid layout for episodes
+    navigation.style.display = "block";
+  }
+}
+
+document.getElementById("back-to-shows").addEventListener("click", () => {
+  toggleView("shows");
+});
+
 async function fetchEpisodesForShow(showId) {
   if (cachedEpisodes[showId]) {
     // Use cached episodes if available
     allEpisodes = cachedEpisodes[showId];
     makePageForEpisodes(allEpisodes);
     populateEpisodeSelector(allEpisodes);
+    toggleView("episodes"); // Ensure view switches to episodes
     return;
   }
 
@@ -58,6 +137,7 @@ async function fetchEpisodesForShow(showId) {
 
     makePageForEpisodes(allEpisodes);
     populateEpisodeSelector(allEpisodes);
+    toggleView("episodes"); // Ensure view switches to episodes
   } catch (error) {
     console.error("Error fetching episodes:", error);
   }
